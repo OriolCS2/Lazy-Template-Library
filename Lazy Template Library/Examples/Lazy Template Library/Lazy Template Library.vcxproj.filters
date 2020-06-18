@@ -2,29 +2,26 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Library">
-      <UniqueIdentifier>{63bfd1b7-5abb-4d9c-8032-915466d9c541}</UniqueIdentifier>
+      <UniqueIdentifier>{b2f8558d-862b-45ed-ae4f-018855d12c68}</UniqueIdentifier>
     </Filter>
     <Filter Include="Examples">
-      <UniqueIdentifier>{7da9800b-4a1f-4447-a14e-4df59cc4b00d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Examples\String">
-      <UniqueIdentifier>{696abf7e-039c-44a0-b3a9-340e93615a9b}</UniqueIdentifier>
+      <UniqueIdentifier>{0c1dd625-a7ab-4591-a7a6-63f7c650781f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="string.h">
+    <ClInclude Include="..\..\LazyTemplateLibrary.h">
       <Filter>Library</Filter>
     </ClInclude>
-    <ClInclude Include="LazyTemplateLibrary.h">
+    <ClInclude Include="..\..\string.h">
       <Filter>Library</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="string.cpp">
+    <ClCompile Include="..\..\string.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="ExampleString.cpp">
-      <Filter>Examples\String</Filter>
+    <ClCompile Include="..\ExampleString.cpp">
+      <Filter>Examples</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
