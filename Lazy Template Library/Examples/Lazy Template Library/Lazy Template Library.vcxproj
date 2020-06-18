@@ -123,6 +123,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="LazyTemplateLibrary.h" />
+    <ClInclude Include="string.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ExampleString.cpp" />
+    <ClCompile Include="string.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
