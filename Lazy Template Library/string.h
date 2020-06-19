@@ -186,12 +186,7 @@ public:
 			delete[] tmp;
 		}
 		else if (new_size > buf_size) {
-			size_t newBufSize = new_size - buf_size;
-			char* tmp = new char[newBufSize + 1]();
-			memset(tmp, ch, newBufSize);
-			memset(tmp + newBufSize, 0, 1);
-			append(tmp, newBufSize);
-			delete[] tmp;
+			append(new_size - buf_size, ch);
 		}
 	}
 
@@ -203,11 +198,35 @@ public:
 		return buf_size;
 	}
 
-private:
+	/*---Append---*/
+	string& append(size_t count, char ch) {
+		char* tmp = new char[count + 1]();
+		memset(tmp, ch, count);
+		memset(tmp + count, 0, 1);
+		append(tmp, count);
+		delete[] tmp;
+		return *this;
+	}
 
-	void allocate(size_t size) {
-		this->capacity_t = size;
-		buffer = new char[size + 1]();
+	string& append(const char* ptr) {
+		if (ptr != nullptr) {
+			return append(ptr, strlen(ptr));
+		}
+		return *this;
+	}
+
+	string& append(const string& str, size_t begin, size_t end = npos) {
+		if (str.buf_size > 0 && begin < str.buf_size && end > begin) {
+			return append(str.buffer + begin, ((end != npos) ? ((end - begin + 1 < str.buf_size) ? end - begin + 1 : str.buf_size - begin) : str.buf_size - begin));
+		}
+		return *this;
+	}
+
+	string& append(const string& str) {
+		if (str.buf_size > 0) {
+			return append(str.buffer, str.buf_size);
+		}
+		return *this;
 	}
 
 	string& append(const char* buf, size_t bufSize) {
@@ -220,12 +239,24 @@ private:
 			delete[] tmp;
 		}
 
+		memcpy(buffer + buf_size, buf, bufSize);
 		buf_size += bufSize;
-		strcat_s(buffer, capacity_t + 1, buf);
-		//strcat_s(buffer, buf_size, buf);
 
 		return *this;
 	}
+
+	/*---Append---*/
+
+private:
+
+	void allocate(size_t size) {
+		this->capacity_t = size;
+		buffer = new char[size + 1]();
+	}
+
+public:
+
+	static constexpr size_t npos = -1;
 
 private:
 
