@@ -14,21 +14,16 @@ int main()
 	std::string f("aaa");
 	
 	f.reserve(40);
-	f.resize(15, 'A');
-	f.append(10, 'v');
-	f.append("HOLA");
-	f.append("KKK", 2);
-	f.append(std::string("F233"), 2);
-	f.append(std::string(""));
-
+	f.assign(2, 'c');
+	f.assign("Hello");
+	f.assign("Hello", 3);
+	f.assign(std::string("Hello"), 1, 3);
+	f.assign(std::string("sada"));
+	
 
 	a.reserve(40);
-	a.resize(15, 'A');
-	a.append(10, 'v');
-	a.append("HOLA");
-	a.append("KKK", 2);
-	a.append(lzy::string("F233"), 2);
-	a.append(lzy::string(""));
+	a.assign(2, 'c');
+	a.assign(lzy::string("vvvvvv"));
 
 	return 0;
 }

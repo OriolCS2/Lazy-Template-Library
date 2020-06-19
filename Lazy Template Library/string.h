@@ -40,6 +40,8 @@ public:
 		dyingObj.buffer = nullptr;
 	}
 
+	// TODO: constructor with iterator, size and capacity
+
 	/*------Constructors------*/
 
 	/*------Destructor------*/
@@ -209,10 +211,7 @@ public:
 	}
 
 	string& append(const char* ptr) {
-		if (ptr != nullptr) {
-			return append(ptr, strlen(ptr));
-		}
-		return *this;
+		return append(ptr, strlen(ptr));
 	}
 
 	string& append(const string& str, size_t begin, size_t end = npos) {
@@ -229,23 +228,86 @@ public:
 		return *this;
 	}
 
+	// TODO: Append with iterators
+
 	string& append(const char* buf, size_t bufSize) {
-		size_t newCapacity = bufSize + buf_size;
-		if (newCapacity > capacity_t) {
-			char* tmp = buffer;
-			size_t last_size = buf_size;
-			allocate(newCapacity);
-			strncpy_s(buffer, last_size + 1, tmp, last_size);
-			delete[] tmp;
+		if (buf != nullptr) {
+			size_t newCapacity = bufSize + buf_size;
+			if (newCapacity > capacity_t) {
+				char* tmp = buffer;
+				size_t last_size = buf_size;
+				allocate(newCapacity);
+				strncpy_s(buffer, last_size + 1, tmp, last_size);
+				delete[] tmp;
+			}
+
+			memcpy(buffer + buf_size, buf, bufSize);
+			buf_size += bufSize;
 		}
-
-		memcpy(buffer + buf_size, buf, bufSize);
-		buf_size += bufSize;
-
 		return *this;
 	}
 
 	/*---Append---*/
+
+	/*---Assign---*/
+
+	string& assign(size_t count, char ch) {
+		if (count > capacity_t) {
+			clear();
+			allocate(count);
+		}
+		else {
+			memset(buffer, 0, capacity_t);
+		}
+		buf_size = count;
+		memset(buffer, ch, buf_size);
+		return *this;
+	}
+
+	string& assign(const char* ptr) {
+		return assign(ptr, strlen(ptr));
+	}
+
+	string& assign(const string& str, size_t begin, size_t end = npos) {
+		if (str.buf_size > 0 && begin < str.buf_size && end > begin) {
+			return assign(str.buffer + begin, ((end != npos) ? ((end - begin + 1 < str.buf_size) ? end - begin + 1 : str.buf_size - begin) : str.buf_size - begin));
+		}
+		return *this;
+	}
+
+	string& assign(const string& str) {
+		return assign(str.buffer, str.buf_size);
+	}
+
+	string& assign(string&& str) {
+		buf_size = str.buf_size;
+		capacity_t = str.capacity_t;
+		if (buffer != nullptr) {
+			delete[] buffer;
+		}
+		buffer = str.buffer;
+		str.buffer = nullptr;
+		return *this;
+	}
+
+	// TODO: assign with iterators
+
+	string& assign(const char* ptr, size_t size) {
+		if (ptr != nullptr) {
+			if (size > capacity_t) {
+				clear();
+				allocate(size);
+			}
+			else {
+				memset(buffer, 0, capacity_t);
+			}
+			buf_size = size;
+			memcpy(buffer, ptr, size);
+		}
+		return *this;
+	}
+
+	/*---Assign---*/
 
 private:
 
