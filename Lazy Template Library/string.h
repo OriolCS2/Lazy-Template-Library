@@ -31,7 +31,7 @@ public:
 	}
 
 	string(string&& dyingObj) noexcept {
-		clear();
+		restore();
 
 		capacity_t = dyingObj.capacity_t;
 		buffer = dyingObj.buffer;
@@ -46,7 +46,7 @@ public:
 
 	/*------Destructor------*/
 	~string() {
-		clear();
+		restore();
 	}
 	/*------Destructor------*/
 
@@ -54,7 +54,7 @@ public:
 	/*---Equal---*/
 	// copy operator
 	string& operator=(const string& str) {
-		clear();
+		restore();
 
 		allocate(str.capacity_t);
 		buf_size = str.buf_size;
@@ -64,7 +64,7 @@ public:
 	}
 	// copy on die operator
 	string& operator=(string&& dyingObj) noexcept {
-		clear();
+		restore();
 
 		capacity_t = dyingObj.capacity_t;
 		buffer = dyingObj.buffer;
@@ -76,7 +76,7 @@ public:
 	}
 
 	string& operator=(const char* ptr) {
-		clear();
+		restore();
 
 		if (ptr != nullptr) {
 			buf_size = strlen(ptr);
@@ -159,12 +159,17 @@ public:
 	/*---Compare Different---*/
 	/*------Operators------*/
 
-	void clear() {
+	void restore() {
 		if (buffer != nullptr) {
 			delete[] buffer;
 			buffer = nullptr;
 		}
 		capacity_t = buf_size = 0U;
+	}
+
+	void clear() {
+		memset(buffer, 0, capacity_t);
+		buf_size = 0U;
 	}
 
 	void reserve(size_t new_capacity) {
@@ -192,11 +197,11 @@ public:
 		}
 	}
 
-	size_t capacity() {
+	size_t capacity() const {
 		return capacity_t;
 	}
 	
-	size_t size() {
+	size_t size() const {
 		return buf_size;
 	}
 
@@ -253,7 +258,7 @@ public:
 
 	string& assign(size_t count, char ch) {
 		if (count > capacity_t) {
-			clear();
+			restore();
 			allocate(count);
 		}
 		else {
@@ -295,7 +300,7 @@ public:
 	string& assign(const char* ptr, size_t size) {
 		if (ptr != nullptr) {
 			if (size > capacity_t) {
-				clear();
+				restore();
 				allocate(size);
 			}
 			else {
@@ -322,6 +327,67 @@ public:
 	}
 
 	/*---At---*/
+
+	/*---Back---*/
+
+	char& back() {
+		lzy_assert(buffer == nullptr || buf_size == 0U, "String is empty");
+		return buffer[buf_size - 1];
+	}
+
+	const char& back() const {
+		lzy_assert(buffer == nullptr || buf_size == 0U, "String is empty");
+		return buffer[buf_size - 1];
+	}
+
+	/*---Back---*/
+
+	/*---Compare---*/
+
+	int compare(size_t begin, size_t end, const string& str) {
+		return compare(begin, end, str.buffer);
+	}
+
+	int compare(size_t begin, size_t num_to_compare, const string& str, size_t subpos, size_t sublen) {
+		if (str.buf_size > 0 && subpos < str.buf_size && sublen > subpos) {
+			size_t size = (str.buf_size - subpos < sublen) ? str.buf_size - subpos : sublen;
+			char* tmp = new char[size + 1];
+			memcpy(tmp, str.buffer + subpos, size);
+			memset(tmp + size, 0, 1);
+			int ret = compare(begin, num_to_compare, tmp);
+			delete[] tmp;
+			return ret;
+		}
+		return -1;
+	}
+
+	int compare(size_t begin, size_t num_to_compare, const char* ptr) {
+		lzy_assert(ptr == nullptr || buffer == nullptr, "const char* or buffer to compare is nullptr!");
+		if (buf_size > 0 && begin < buf_size && num_to_compare > 0) {
+			size_t size = (num_to_compare > buf_size - begin) ? buf_size - begin : num_to_compare;
+			char* tmp = new char[size + 1];
+			memcpy(tmp, buffer + begin, size);
+			memset(tmp + size, 0, 1);
+			int ret = strcmp(tmp, ptr);
+			delete[] tmp;
+			return ret;
+		}
+		return -1;
+	}
+
+	int compare(const string& str) {
+		lzy_assert(str.buffer == nullptr || buffer == nullptr, "string or buffer to compare is nullptr!");
+		return strcmp(str.buffer, buffer);
+	}
+
+	int compare(const char* ptr) {
+		lzy_assert(ptr == nullptr || buffer == nullptr, "const char* or buffer to compare is nullptr!");
+		return strcmp(ptr, buffer);
+	}
+
+	/*---Compare---*/
+
+	// TODO: begin, cbegin, cend
 
 private:
 
