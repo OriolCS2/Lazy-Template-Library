@@ -344,11 +344,11 @@ public:
 
 	/*---Compare---*/
 
-	int compare(size_t begin, size_t end, const string& str) {
+	int compare(size_t begin, size_t end, const string& str) const {
 		return compare(begin, end, str.buffer);
 	}
 
-	int compare(size_t begin, size_t num_to_compare, const string& str, size_t subpos, size_t sublen) {
+	int compare(size_t begin, size_t num_to_compare, const string& str, size_t subpos, size_t sublen) const {
 		if (str.buf_size > 0 && subpos < str.buf_size && sublen > subpos) {
 			size_t size = (str.buf_size - subpos < sublen) ? str.buf_size - subpos : sublen;
 			char* tmp = new char[size + 1];
@@ -361,7 +361,7 @@ public:
 		return -1;
 	}
 
-	int compare(size_t begin, size_t num_to_compare, const char* ptr) {
+	int compare(size_t begin, size_t num_to_compare, const char* ptr) const {
 		lzy_assert(ptr == nullptr || buffer == nullptr, "const char* or buffer to compare is nullptr!");
 		if (buf_size > 0 && begin < buf_size && num_to_compare > 0) {
 			size_t size = (num_to_compare > buf_size - begin) ? buf_size - begin : num_to_compare;
@@ -375,12 +375,12 @@ public:
 		return -1;
 	}
 
-	int compare(const string& str) {
+	int compare(const string& str) const {
 		lzy_assert(str.buffer == nullptr || buffer == nullptr, "string or buffer to compare is nullptr!");
 		return strcmp(str.buffer, buffer);
 	}
 
-	int compare(const char* ptr) {
+	int compare(const char* ptr) const {
 		lzy_assert(ptr == nullptr || buffer == nullptr, "const char* or buffer to compare is nullptr!");
 		return strcmp(ptr, buffer);
 	}
@@ -436,7 +436,169 @@ public:
 
 	/*---Empty---*/
 
-	// TODO: begin, cbegin, cend, crbegin, crend, end, erase
+	/*---Find---*/
+
+	size_t find(const char ch, size_t pos = 0U) const {
+		if (pos >= 0 && pos < buf_size) {
+			for (size_t i = pos; pos < buf_size; ++i) {
+				if (buffer[i] == ch) {
+					return i;
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find(const char* ptr, size_t pos, size_t count) const {
+		if (ptr != nullptr && pos >= 0 && pos < buf_size && count > 0) {
+			count = (count > buf_size - pos) ? buf_size - pos : count;
+			size_t ret = 0U;
+			size_t equal = 0U;
+			for (size_t i = pos; i < buf_size; ++i) {
+				if ((i < buf_size && buffer[i] == ptr[equal])) {
+					if (ret == 0U) {
+						ret = i;
+					}
+					++equal;
+				}
+				else {
+					equal = 0U;
+					ret = 0U;
+				}
+
+				if (equal == count) {
+					return ret;
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find(const string& str, size_t pos = 0U) const {
+		return find(str.buffer, pos);
+	}
+
+	size_t find(const char* ptr, size_t pos = 0U) const {
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t ptr_size = strlen(ptr);
+			size_t size = buf_size - pos;
+			size_t loop_size = (size < ptr_size) ? size : ptr_size;
+			size_t count = 0U;
+			size_t ret = 0U;
+			for (size_t i = pos; i < buf_size; ++i) {
+				if ((i < buf_size && buffer[i] == ptr[count])) {
+					if (ret == 0U) {
+						ret = i;
+					}
+					++count;
+					if (count == ptr_size) {
+						return ret;
+					}
+				}
+				else {
+					count = 0U;
+					ret = 0U;
+				}
+			}
+
+		}
+		return npos;
+	}
+
+	size_t find_first_not_of(const string& str, size_t pos = 0U) const {
+		return find_first_not_of(str.buffer, pos);
+	}
+
+	size_t find_first_not_of(const char* ptr, size_t pos, size_t count) const {
+		if (ptr != nullptr && pos >= 0 && pos < buf_size && count > 0U) {
+			size_t ptr_len = strlen(ptr);
+			ptr_len = (ptr_len > count) ? count : ptr_len;
+			for (size_t i = pos; i < buf_size; ++i) {
+				bool ret = false;
+				for (size_t j = 0; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						ret = true;
+						break;
+					}
+				}
+				if (!ret) {
+					return i;
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find_first_not_of(const char* ptr, size_t pos = 0U) const {
+		if (pos >= 0 && pos < buf_size && ptr != nullptr) {
+			size_t ptr_len = strlen(ptr);
+			for (size_t i = pos; i < buf_size; ++i) {
+				bool ret = false;
+				for (size_t j = 0; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						ret = true;
+						break;
+					}
+				}
+				if (!ret) {
+					return i;
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find_first_not_of(const char ch, size_t pos = 0U) const {
+		if (pos >= 0 && pos < buf_size) {
+			for (size_t i = pos; i < buf_size; ++i) {
+				if (buffer[i] != ch) {
+					return i;
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find_first_of(const string& str, size_t pos = 0U) const {
+		return find_first_of(str.buffer, pos);
+	}
+
+	size_t find_first_of(const char* ptr, size_t pos, size_t count) const {
+		if (ptr != nullptr && pos >= 0 && pos < buf_size && count > 0U) {
+			size_t ptr_len = strlen(ptr);
+			ptr_len = (ptr_len > count) ? count : ptr_len;
+			for (size_t i = pos; i < buf_size; ++i) {
+				for (size_t j = 0U; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						return i;
+					}
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find_first_of(const char* ptr, size_t pos = 0U) const {
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t ptr_len = strlen(ptr);
+			for (size_t i = pos; i < buf_size; ++i) {
+				for (size_t j = 0; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						return i;
+					}
+				}
+			}
+		}
+		return npos;
+	}
+
+	size_t find_first_of(const char ch, size_t pos) const {
+		return find(ch, pos);
+	}
+
+	/*---Find---*/
+
+	// TODO: begin, cbegin, cend, crbegin, crend, end, erase, assign and constructor with format
 
 private:
 
