@@ -17,9 +17,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\string.cpp">
-      <Filter>Library</Filter>
-    </ClCompile>
     <ClCompile Include="..\ExampleString.cpp">
       <Filter>Examples</Filter>
     </ClCompile>

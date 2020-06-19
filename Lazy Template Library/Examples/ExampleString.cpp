@@ -1,6 +1,16 @@
 #include "..\string.h"
 
-void main()
-{
+#include <string>
 
+lzy::string getAString()
+{
+	lzy::string str("AAAAAAAaaa");
+	return str;
+}
+
+int main()
+{
+	lzy::string a(nullptr);
+
+	return 0;
 }
