@@ -10,7 +10,12 @@ lzy::string getAString()
 
 int main()
 {
-	lzy::string a(nullptr);
+	lzy::string a("aaa");
+	std::string f("aaa");
+	std::string f2;
+	f.resize(15, 'A');
+
+	a.resize(15, 'A');
 
 	return 0;
 }

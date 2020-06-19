@@ -12,27 +12,30 @@ public:
 	/*------Constructors------*/
 
 	// Default constructor
-	string() : buffer(nullptr), size(0U) {}
+	string() : buffer(nullptr), capacity_t(0U), buf_size(0U) {}
 
 	// Const char* constructor
 	string(const char* ptr) {
 		if (ptr != nullptr) {
-			allocate(strlen(ptr));
-			strncpy_s(buffer, size + 1, ptr, size);
+			buf_size = strlen(ptr);
+			allocate(buf_size);
+			strncpy_s(buffer, capacity_t + 1, ptr, capacity_t);
 		}
 	}
 
 	// another string constructor
 	string(const string& object) {
-		allocate(object.size);
-		strncpy_s(buffer, size + 1, object.buffer, size);
+		allocate(object.capacity_t);
+		buf_size = object.buf_size;
+		strncpy_s(buffer, capacity_t + 1, object.buffer, capacity_t);
 	}
 
 	string(string&& dyingObj) noexcept {
 		clear();
 
-		size = dyingObj.size;
+		capacity_t = dyingObj.capacity_t;
 		buffer = dyingObj.buffer;
+		buf_size = dyingObj.buf_size;
 
 		dyingObj.buffer = nullptr;
 	}
@@ -46,13 +49,14 @@ public:
 	/*------Destructor------*/
 
 	/*------Operators------*/
-
+	/*---Equal---*/
 	// copy operator
 	string& operator=(const string& str) {
 		clear();
 
-		allocate(str.size);
-		strncpy_s(buffer, size + 1, str.buffer, size);
+		allocate(str.capacity_t);
+		buf_size = str.buf_size;
+		strncpy_s(buffer, capacity_t + 1, str.buffer, capacity_t);
 
 		return *this;
 	}
@@ -60,8 +64,9 @@ public:
 	string& operator=(string&& dyingObj) noexcept {
 		clear();
 
-		size = dyingObj.size;
+		capacity_t = dyingObj.capacity_t;
 		buffer = dyingObj.buffer;
+		buf_size = dyingObj.buf_size;
 
 		dyingObj.buffer = nullptr;
 
@@ -72,15 +77,18 @@ public:
 		clear();
 
 		if (ptr != nullptr) {
-			allocate(strlen(ptr));
-			strncpy_s(buffer, size + 1, ptr, size);
+			buf_size = strlen(ptr);
+			allocate(buf_size);
+			strncpy_s(buffer, capacity_t + 1, ptr, capacity_t);
 		}
 
 		return *this;
 	}
+	/*---Equal---*/
 
+	/*---Add/Equal---*/
 	string& operator+=(const string& str) {
-		return append(str.buffer, str.size);
+		return append(str.buffer, str.buf_size);
 	}
 
 	string& operator+=(const char* ptr) {
@@ -89,14 +97,17 @@ public:
 		}
 		return *this;
 	}
+	/*---Add/Equal---*/
 
+	/*---Add---*/
 	string operator+(const string& str) {
 		string tmp;
 
-		tmp.allocate(size + str.size);
+		tmp.allocate(buf_size + str.buf_size);
+		tmp.buf_size = tmp.capacity_t;
 
-		strncpy_s(tmp.buffer, size + 1, buffer, size);
-		strncpy_s(tmp.buffer + size, str.size + 1, str.buffer, str.size);
+		strncpy_s(tmp.buffer, capacity_t + 1, buffer, capacity_t);
+		strncpy_s(tmp.buffer + capacity_t, str.capacity_t + 1, str.buffer, str.capacity_t);
 
 		return tmp;
 	}
@@ -105,17 +116,21 @@ public:
 		string tmp;
 		if (ptr != nullptr) {
 			size_t ptrSize = strlen(ptr);
-			tmp.allocate(size + ptrSize);
+			tmp.allocate(buf_size + ptrSize);
+			tmp.buf_size = tmp.capacity_t;
 
-			strncpy_s(tmp.buffer, size + 1, buffer, size);
-			strncpy_s(tmp.buffer + size, ptrSize + 1, ptr, ptrSize);
+			strncpy_s(tmp.buffer, capacity_t + 1, buffer, capacity_t);
+			strncpy_s(tmp.buffer + capacity_t, ptrSize + 1, ptr, ptrSize);
 		}
 		else {
 			tmp = *this;
 		}
 		return tmp;
 	}
+	/*---Add---*/
 
+
+	/*---Compare Equal---*/
 	bool operator==(const string& str) const {
 		return strcmp(buffer, str.buffer) == 0;
 	}
@@ -126,7 +141,9 @@ public:
 		}
 		return false;
 	}
+	/*---Compare Equal---*/
 
+	/*---Compare Different---*/
 	bool operator!=(const string& str) const {
 		return strcmp(buffer, str.buffer) != 0;
 	}
@@ -137,6 +154,7 @@ public:
 		}
 		return false;
 	}
+	/*---Compare Different---*/
 	/*------Operators------*/
 
 	void clear() {
@@ -144,33 +162,76 @@ public:
 			delete[] buffer;
 			buffer = nullptr;
 		}
-		size = 0U;
+		capacity_t = buf_size = 0U;
 	}
 
+	void reserve(size_t new_capacity) {
+		if (capacity_t >= new_capacity) {
+			return;
+		}
+
+		char* tmp = buffer;
+		size_t last_size = buf_size;
+		allocate(new_capacity);
+		strncpy_s(buffer, last_size + 1, tmp, last_size);
+		delete[] tmp;
+	}
+
+	void resize(size_t new_size, char ch = '\0') {
+		if (new_size < buf_size) {
+			char* tmp = buffer;
+			buf_size = new_size;
+			allocate(new_size);
+			memcpy(buffer, tmp, new_size);
+			delete[] tmp;
+		}
+		else if (new_size > buf_size) {
+			size_t newBufSize = new_size - buf_size;
+			char* tmp = new char[newBufSize + 1]();
+			memset(tmp, ch, newBufSize);
+			memset(tmp + newBufSize, 0, 1);
+			append(tmp, newBufSize);
+			delete[] tmp;
+		}
+	}
+
+	size_t capacity() {
+		return capacity_t;
+	}
+	
+	size_t size() {
+		return buf_size;
+	}
 
 private:
 
 	void allocate(size_t size) {
-		this->size = size;
-		buffer = new char[size + 1];
+		this->capacity_t = size;
+		buffer = new char[size + 1]();
 	}
 
 	string& append(const char* buf, size_t bufSize) {
-		unsigned int need_size = bufSize + size + 1;
-		if (need_size > size) {
+		size_t newCapacity = bufSize + buf_size;
+		if (newCapacity > capacity_t) {
 			char* tmp = buffer;
-			size_t last_size = size;
-			allocate(need_size);
+			size_t last_size = buf_size;
+			allocate(newCapacity);
 			strncpy_s(buffer, last_size + 1, tmp, last_size);
 			delete[] tmp;
 		}
-		strcat_s(buffer, size + 1, buf);
+
+		buf_size += bufSize;
+		strcat_s(buffer, capacity_t + 1, buf);
+		//strcat_s(buffer, buf_size, buf);
+
+		return *this;
 	}
 
 private:
 
 	char* buffer = nullptr;
-	size_t size = 0U;
+	size_t capacity_t = 0U;
+	size_t buf_size = 0U;
 };
 
 
