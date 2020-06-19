@@ -596,6 +596,117 @@ public:
 		return find(ch, pos);
 	}
 
+	size_t find_last_not_of(const char ch, size_t last_pos_search = npos) const {
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		if (pos >= 0U && pos < buf_size) {
+			size_t last_match = npos;
+			for (size_t i = 0U; i <= pos; ++i) {
+				if (buffer[i] != ch) {
+					last_match = i;
+				}
+			}
+			return last_match;
+		}
+		return npos;
+	}
+
+	size_t find_last_not_of(const string& str, size_t last_pos_search = npos) const {
+		return find_last_not_of(str.buffer, last_pos_search);
+	}
+
+	size_t find_last_not_of(const char* ptr, size_t last_pos_search, size_t count) const {
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t ptr_len = strlen(ptr);
+			ptr_len = (ptr_len > count) ? count : ptr_len;
+			size_t last_match = npos;
+			for (size_t i = 0U; i <= pos; ++i) {
+				bool matches = false;
+				for (size_t j = 0U; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						matches = true;
+					}
+				}
+				if (!matches) {
+					last_match = i;
+				}
+			}
+			return last_match;
+		}
+		return npos;
+	}
+
+	size_t find_last_not_of(const char* ptr, size_t last_pos_search = npos) const {
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t ptr_len = strlen(ptr);
+			size_t last_match = npos;
+			for (size_t i = 0U; i <= pos; ++i) {
+				bool matches = false;
+				for (size_t j = 0U; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						matches = true;
+					}
+				}
+				if (!matches) {
+					last_match = i;
+				}
+			}
+			return last_match;
+		}
+		return npos;
+	}
+
+	size_t find_last_of(const char ch, size_t last_pos_search = npos) const {
+		size_t last = npos;
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		for (size_t i = 0U; i <= pos; ++i) {
+			if (buffer[i] == ch) {
+				last = i;
+			}
+		}
+		return last;
+	}
+
+	size_t find_last_of(const string& str, size_t last_pos_search = npos) const {
+		return find_last_of(str.buffer, last_pos_search);
+	}
+
+	size_t find_last_of(const char* ptr, size_t last_pos_search, size_t count) const {
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t ptr_len = strlen(ptr);
+			ptr_len = (ptr_len > count) ? count : ptr_len;
+			size_t last = npos;
+			for (size_t i = 0U; i <= pos; ++i) {
+				for (size_t j = 0U; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						last = i;
+					}
+				}
+			}
+			return last;
+		}
+		return npos;
+	}
+
+	size_t find_last_of(const char* ptr, size_t last_pos_search = npos) const {
+		size_t pos = (last_pos_search >= buf_size) ? buf_size - 1 : last_pos_search;
+		if (ptr != nullptr && pos >= 0 && pos < buf_size) {
+			size_t last = npos;
+			size_t ptr_len = strlen(ptr);
+			for (size_t i = 0U; i <= pos; ++i) {
+				for (size_t j = 0U; j < ptr_len; ++j) {
+					if (buffer[i] == ptr[j]) {
+						last = i;
+					}
+				}
+			}
+			return last;
+		}
+		return npos;
+	}
+
 	/*---Find---*/
 
 	// TODO: begin, cbegin, cend, crbegin, crend, end, erase, assign and constructor with format
