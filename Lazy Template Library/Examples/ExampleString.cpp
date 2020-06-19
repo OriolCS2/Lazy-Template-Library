@@ -14,16 +14,11 @@ int main()
 	std::string f("aaa");
 	
 	f.reserve(40);
-	f.assign(2, 'c');
-	f.assign("Hello");
-	f.assign("Hello", 3);
-	f.assign(std::string("Hello"), 1, 3);
-	f.assign(std::string("sada"));
+	f.at(0) = 'F';
 	
 
 	a.reserve(40);
-	a.assign(2, 'c');
-	a.assign(lzy::string("vvvvvv"));
+	a.at(0) = 'F';
 
 	return 0;
 }

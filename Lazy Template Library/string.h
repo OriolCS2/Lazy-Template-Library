@@ -309,6 +309,20 @@ public:
 
 	/*---Assign---*/
 
+	/*---At---*/
+
+	char& at(const size_t index) {
+		lzy_assert(index < 0 || index >= buf_size, "Index out of bounds");
+		return buffer[index];
+	}
+
+	const char& at(const size_t index) const {
+		lzy_assert(index < 0 || index >= buf_size, "Index out of bounds");
+		return buffer[index];
+	}
+
+	/*---At---*/
+
 private:
 
 	void allocate(size_t size) {
