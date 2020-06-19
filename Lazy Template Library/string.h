@@ -387,7 +387,56 @@ public:
 
 	/*---Compare---*/
 
-	// TODO: begin, cbegin, cend
+	/*---Copy---*/
+
+	size_t copy(char* ptr, size_t count, size_t pos = 0U) {
+		if (ptr != nullptr && pos >= 0 && pos <= buf_size) {
+			size_t size = strlen(ptr);
+			size_t to_copy = (count < buf_size) ? count : buf_size - 1;
+			size_t copied = 0U;
+
+			for (size_t i = 0U; i < size; ++i) {
+				if (pos + i < buf_size) {
+					ptr[i] = buffer[pos + i];
+					++copied;
+				}
+				else {
+					break;
+				}
+			}
+
+			return copied;
+		}
+		return 0U;
+	}
+
+	/*---Copy---*/
+
+	/*---C_Str---*/
+
+	const char* c_str() const {
+		return buffer;
+	}
+
+	/*---C_Str---*/
+
+	/*---Data---*/
+
+	const char* data() const {
+		return buffer;
+	}
+
+	/*---Data---*/
+
+	/*---Empty---*/
+
+	bool empty() const {
+		return buf_size == 0U;
+	}
+
+	/*---Empty---*/
+
+	// TODO: begin, cbegin, cend, crbegin, crend, end, erase
 
 private:
 
