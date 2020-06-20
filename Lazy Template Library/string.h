@@ -447,7 +447,7 @@ public:
 
 	size_t find(const char ch, size_t pos = 0U) const {
 		if (pos >= 0 && pos < buf_size) {
-			for (size_t i = pos; pos < buf_size; ++i) {
+			for (size_t i = pos; i < buf_size; ++i) {
 				if (buffer[i] == ch) {
 					return i;
 				}
@@ -459,18 +459,19 @@ public:
 	size_t find(const char* ptr, size_t pos, size_t count) const {
 		if (ptr != nullptr && pos >= 0 && pos < buf_size && count > 0) {
 			count = (count > buf_size - pos) ? buf_size - pos : count;
-			size_t ret = 0U;
+			size_t ret = npos;
 			size_t equal = 0U;
 			for (size_t i = pos; i < buf_size; ++i) {
 				if ((i < buf_size && buffer[i] == ptr[equal])) {
-					if (ret == 0U) {
+					if (ret == npos) {
 						ret = i;
 					}
 					++equal;
 				}
 				else {
+					--i;
 					equal = 0U;
-					ret = 0U;
+					ret = npos;
 				}
 
 				if (equal == count) {
@@ -491,10 +492,10 @@ public:
 			size_t size = buf_size - pos;
 			size_t loop_size = (size < ptr_size) ? size : ptr_size;
 			size_t count = 0U;
-			size_t ret = 0U;
+			size_t ret = npos;
 			for (size_t i = pos; i < buf_size; ++i) {
 				if ((i < buf_size && buffer[i] == ptr[count])) {
-					if (ret == 0U) {
+					if (ret == npos) {
 						ret = i;
 					}
 					++count;
@@ -503,8 +504,9 @@ public:
 					}
 				}
 				else {
+					--i;
 					count = 0U;
-					ret = 0U;
+					ret = npos;
 				}
 			}
 
@@ -707,6 +709,86 @@ public:
 					if (buffer[i] == ptr[j]) {
 						last = i;
 					}
+				}
+			}
+			return last;
+		}
+		return npos;
+	}
+
+	size_t rfind(const char ch, size_t end = npos) const {
+		if (end >= 0) {
+			end = (end > buf_size) ? buf_size : end;
+			size_t last = npos;
+			for (size_t i = 0U; i < end; ++i) {
+				if (buffer[i] == ch) {
+					last = i;
+				}
+			}
+			return last;
+		}
+		return npos;
+	}
+
+	size_t rfind(const char* ptr, size_t end, size_t count) const {
+		if (ptr != nullptr && end >= 0) {
+			end = (end > buf_size) ? buf_size : end + 1;
+			size_t ret = npos;
+			size_t equal = 0U;
+			size_t last = npos;
+			for (size_t i = 0U; i <= end; ++i) {
+				if ((i < buf_size && buffer[i] == ptr[equal])) {
+					if (ret == npos) {
+						ret = i;
+					}
+					++equal;
+				}
+				else {
+					equal = 0U;
+					ret = npos;
+					--i;
+				}
+
+				if (equal == count) {
+					last = ret;
+					equal = 0U;
+					ret = npos;
+				}
+			}
+			return last;
+		}
+		return npos;
+	}
+
+	size_t rfind(const string& str, size_t end = npos) const {
+		return rfind(str.buffer, end);
+	}
+
+	size_t rfind(const char* ptr, size_t end = npos) const {
+		if (ptr != nullptr && end >= 0) {
+			end = (end > buf_size) ? buf_size : end + 1;
+			size_t ptr_size = strlen(ptr);
+			size_t size = buf_size - end;
+			size_t loop_size = (size < ptr_size) ? size : ptr_size;
+			size_t count = 0U;
+			size_t ret = npos;
+			size_t last = npos;
+			for (size_t i = 0U; i <= end; ++i) {
+				if ((i < buf_size && buffer[i] == ptr[count])) {
+					if (ret == npos) {
+						ret = i;
+					}
+					++count;
+					if (count == ptr_size) {
+						last = ret;
+						ret = npos;
+						count = 0U;
+					}
+				}
+				else {
+					--i;
+					count = 0U;
+					ret = npos;
 				}
 			}
 			return last;
