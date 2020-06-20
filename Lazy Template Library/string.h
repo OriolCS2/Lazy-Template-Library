@@ -38,6 +38,7 @@ public:
 		buf_size = dyingObj.buf_size;
 
 		dyingObj.buffer = nullptr;
+		dyingObj.buf_size = dyingObj.capacity_t = 0U;
 	}
 
 	// TODO: constructor with iterator, size and capacity
@@ -64,14 +65,16 @@ public:
 	}
 	// copy on die operator
 	string& operator=(string&& dyingObj) noexcept {
-		restore();
+		if (this != &dyingObj) {
+			restore();
 
-		capacity_t = dyingObj.capacity_t;
-		buffer = dyingObj.buffer;
-		buf_size = dyingObj.buf_size;
+			capacity_t = dyingObj.capacity_t;
+			buffer = dyingObj.buffer;
+			buf_size = dyingObj.buf_size;
 
-		dyingObj.buffer = nullptr;
-
+			dyingObj.buffer = nullptr;
+			dyingObj.buf_size = dyingObj.capacity_t = 0U;
+		}
 		return *this;
 	}
 
