@@ -189,11 +189,8 @@ public:
 
 	void resize(size_t new_size, char ch = '\0') {
 		if (new_size < buf_size) {
-			char* tmp = buffer;
+			memset(buffer + new_size, '\0', buf_size - new_size);
 			buf_size = new_size;
-			allocate(new_size);
-			memcpy(buffer, tmp, new_size);
-			delete[] tmp;
 		}
 		else if (new_size > buf_size) {
 			append(new_size - buf_size, ch);
@@ -836,7 +833,38 @@ public:
 
 	/*---PushBack---*/
 
-	// TODO: begin, cbegin, cend, crbegin, crend, end, rbegin, rend, erase, insert, assign and constructor with format
+	/*---ShrinkToFit---*/
+	
+	void shrink_to_fit() {
+		if (capacity_t > 0 && capacity_t != buf_size) {
+			char* tmp = buffer;
+			allocate(buf_size);
+			memcpy(buffer, tmp, buf_size);
+			delete[] tmp;
+		}
+	}
+
+	/*---ShrinkToFit---*/
+
+	/*---SubString---*/
+
+	string substr(size_t begin = 0U, size_t count = npos) {
+		if (buf_size > 0 && begin < buf_size) {
+			string s;
+			for (size_t i = begin; i < buf_size; ++i) {
+				s.push_back(buffer[i]);
+				if (s.size() == count) {
+					break;
+				}
+			}
+			return s;
+		}
+		return string();
+	}
+
+	/*---SubString---*/
+
+	// TODO: begin, cbegin, cend, crbegin, crend, end, rbegin, rend, erase, replace, insert, assign and constructor with format
 
 private:
 
