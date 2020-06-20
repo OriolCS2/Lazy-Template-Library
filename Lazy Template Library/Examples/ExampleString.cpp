@@ -3,13 +3,18 @@
 
 int main()
 {
-	std::string str("loolllofor. snon-alphabetic characters...");
+	std::string str("ABCD");
 
-	std::size_t found = str.find_last_of("s.",100, 2);
 
-	lzy::string str1("loolllofor. snon-alphabetic characters...");
+	lzy::string str1("ABCD");
+	
+	/*str.replace*/
 
-	size_t found1 = str1.find_last_of("s.", 100, 2);
-
+	str1.reserve(15);
+	str.push_back('2');
+	while (str1.size() != 15) {
+		str1.push_back('2');
+	}
+	
 	return 0;
 }

@@ -205,6 +205,10 @@ public:
 		return buf_size;
 	}
 
+	size_t length() const {
+		return buf_size;
+	}
+
 	/*---Append---*/
 	string& append(size_t count, char ch) {
 		char* tmp = new char[count + 1]();
@@ -709,7 +713,45 @@ public:
 
 	/*---Find---*/
 
-	// TODO: begin, cbegin, cend, crbegin, crend, end, erase, assign and constructor with format
+	/*---Front---*/
+
+	char& front() {
+		lzy_assert(buffer == nullptr || buf_size == 0U, "String is empty");
+		return buffer[0];
+	}
+
+	const char& front() const {
+		lzy_assert(buffer == nullptr || buf_size == 0U, "String is empty");
+		return buffer[0];
+	}
+
+	/*---Front---*/
+
+	/*---PopBack---*/
+
+	void pop_back() {
+		if (buf_size > 0) {
+			buffer[--buf_size] = '\0';
+		}
+	}
+
+	/*---PopBack---*/
+
+	/*---PushBack---*/
+
+	void push_back(const char ch) {
+		if (++buf_size > capacity_t) {
+			char* tmp = buffer;
+			allocate(capacity_t + 1);
+			memcpy(buffer, tmp, buf_size - 1);
+			delete[] tmp;
+		}
+		buffer[buf_size - 1] = ch;
+	}
+
+	/*---PushBack---*/
+
+	// TODO: begin, cbegin, cend, crbegin, crend, end, rbegin, rend, erase, insert, assign and constructor with format
 
 private:
 
