@@ -4,17 +4,20 @@
 
 int main()
 {
-	std::string hello("hello");
-	std::string bye("bye");
-	bye.reserve(100);
+	std::string test("Test");
 
-	hello.swap(bye);
+	for (std::string::iterator item = test.begin(); item != test.end(); ++item) {
+		auto i = item;
 
-	lzy::string hello1("hello");
-	lzy::string bye1("bye");
-	bye1.reserve(100);
+		int j = 0;
+	}
+	lzy::string testing("Testing");
 
-	hello1.swap(bye1);
+	for (lzy::string::iterator item = testing.begin(); item != testing.end(); ++item) {
+		char& ch = *item;
+		ch = 'F';
+		
+	}
 
 	return 0;
 }

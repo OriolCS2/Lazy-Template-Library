@@ -9,6 +9,11 @@ BEGIN_LAZY_NAMESPACE
 
 class string {
 public:
+
+	static constexpr size_t npos = -1;
+	using iterator = iterator<char>;
+
+public:
 	/*------Constructors------*/
 
 	// Default constructor
@@ -886,6 +891,18 @@ public:
 
 	/*---Swap---*/
 
+	/*---Iterators---*/
+
+	iterator begin() {
+		return iterator(&buffer[0], 1U);
+	}
+
+	iterator end() {
+		return iterator(&buffer[buf_size], 1U);
+	}
+
+	/*---Iterators---*/
+
 	// TODO: begin, cbegin, cend, crbegin, crend, end, rbegin, rend, erase, replace, insert, assign and constructor with format
 
 private:
@@ -894,10 +911,6 @@ private:
 		this->capacity_t = size;
 		buffer = new char[size + 1]();
 	}
-
-public:
-
-	static constexpr size_t npos = -1;
 
 private:
 
