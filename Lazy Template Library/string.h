@@ -160,6 +160,17 @@ public:
 		return false;
 	}
 	/*---Compare Different---*/
+
+	char& operator[](const size_t index) {
+		lzy_assert(index < 0 || index >= buf_size, "Index out of bounds");
+		return buffer[index];
+	}
+
+	const char& operator[](const size_t index) const {
+		lzy_assert(index < 0 || index >= buf_size, "Index out of bounds");
+		return buffer[index];
+	}
+
 	/*------Operators------*/
 
 	void restore() {
