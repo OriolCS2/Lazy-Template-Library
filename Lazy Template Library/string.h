@@ -30,6 +30,7 @@ public:
 		strncpy_s(buffer, capacity_t + 1, object.buffer, capacity_t);
 	}
 
+	// move constructor
 	string(string&& dyingObj) noexcept {
 		restore();
 
@@ -859,7 +860,7 @@ public:
 
 	/*---SubString---*/
 
-	string substr(size_t begin = 0U, size_t count = npos) {
+	string substr(size_t begin = 0U, size_t count = npos) const {
 		if (buf_size > 0 && begin < buf_size) {
 			string s;
 			for (size_t i = begin; i < buf_size; ++i) {
@@ -874,6 +875,16 @@ public:
 	}
 
 	/*---SubString---*/
+
+	/*---Swap---*/
+
+	void swap(string& str) {
+		string aux = str;
+		str = *this;
+		*this = aux;
+	}
+
+	/*---Swap---*/
 
 	// TODO: begin, cbegin, cend, crbegin, crend, end, rbegin, rend, erase, replace, insert, assign and constructor with format
 

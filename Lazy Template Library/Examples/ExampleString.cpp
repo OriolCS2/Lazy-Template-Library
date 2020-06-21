@@ -4,13 +4,17 @@
 
 int main()
 {
-	std::string str("Hello!");
-	std::string s = str.substr(2, 2);
+	std::string hello("hello");
+	std::string bye("bye");
+	bye.reserve(100);
 
-	lzy::string str1("Hello!");
-	lzy::string s1 = str1.substr(2, 2);
+	hello.swap(bye);
 
-	/*str.swap*/
+	lzy::string hello1("hello");
+	lzy::string bye1("bye");
+	bye1.reserve(100);
+
+	hello1.swap(bye1);
 
 	return 0;
 }
